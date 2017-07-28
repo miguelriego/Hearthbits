@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Database file. You can build from scratch with SQL script
+*.db
+
 # C extensions
 *.so
 
