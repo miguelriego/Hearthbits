@@ -4,6 +4,7 @@ import time
 import sys
 import logging
 from telebot import *
+from soundbot import *
 
 API_TOKEN = ''
 
@@ -17,6 +18,23 @@ def query_text(inline_query):
         r = types.InlineQueryResultArticle('1', 'Result1', types.InputTextMessageContent('hi'))
         r2 = types.InlineQueryResultArticle('2', 'Result2', types.InputTextMessageContent('hi'))
         bot.answer_inline_query(inline_query.id, [r, r2])
+    except Exception as e:
+        print(e)
+
+
+
+@bot.inline_handler(lambda query: query.query == 'card')
+def query_card(inline_query):
+    soundtup = scrape2(inline_query.query)
+    try:
+        r = types.InlineQueryResultPhoto('grim patron',
+                                         'https://raw.githubusercontent.com/eternnoir/pyTelegramBotAPI/master/examples/detailed_example/kitten.jpg',
+                                         'https://raw.githubusercontent.com/eternnoir/pyTelegramBotAPI/master/examples/detailed_example/kitten.jpg',
+                                         input_message_content=types.InputTextMessageContent('hi'))
+        r2 = types.InlineQueryResultPhoto('2',
+                                          'https://raw.githubusercontent.com/eternnoir/pyTelegramBotAPI/master/examples/detailed_example/rooster.jpg',
+                                          'https://raw.githubusercontent.com/eternnoir/pyTelegramBotAPI/master/examples/detailed_example/rooster.jpg')
+        bot.answer_inline_query(inline_query.id, [r, r2], cache_time=1)
     except Exception as e:
         print(e)
 
