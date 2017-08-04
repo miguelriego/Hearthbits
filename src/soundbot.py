@@ -183,14 +183,12 @@ def scrape2(q):
         
         play = (qlist[0], qlist[1], qlist[2])
         attack = (qlist[3], qlist[4], qlist[5])
-        trigger = (qlist[6], qlist[7], qlist[8])
+        # Trigger needs to be adjusted only for cards that have it!
+        # trigger = (qlist[6], qlist[7], qlist[8])
         death = (qlist[9], qlist[10], qlist[11])
-        soundtup = (play, attack, trigger, death)
+        soundtup = (play, attack, death)
         #sounddict = {Play: play, Attack: attack, Trigger: trigger, Death: death}
 
-        # for debug purposes:
-        # print(soundtup[0], "\n", soundtup[1],"\n", soundtup[2],"\n", soundtup[3])
-        # print(sounddict)
         return(soundtup)
 
         c.close()

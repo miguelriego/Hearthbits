@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
 def start(bot, update):
-    bot.send_document(chat_id=update.message.chat_id, caption="Hearthbits, ready to roll!", document="http://i.imgur.com/zqXA1WZ.gif")
+    bot.send_document(chat_id=update.message.chat_id, caption="Hearthbits wishes Andrew White a happy bday!!!", document="http://i.imgur.com/zqXA1WZ.gif")
     #bot.send_audio(chat_id=update.message.chat_id, caption="will it blend?", audio="http://media-Hearth.cursecdn.com/audio/card-sounds/sound/VO_BRM_019_Play_01.ogg")
 
 
@@ -24,9 +24,9 @@ def echo(bot, update):
     #update.message.reply_text(update.message.text)
     soundbits = scrape2(update.message.text)
     # For tuples
-    bot.send_audio(title = "Bogey", chat_id=update.message.chat_id, caption=soundbits[0][0]+"\'s ["+soundbits[0][1]+"] bit", audio=soundbits[0][2])
+    bot.send_audio(chat_id=update.message.chat_id, caption=soundbits[0][0]+"\'s ["+soundbits[0][1]+"] bit", audio=soundbits[0][2])
     bot.send_audio(chat_id=update.message.chat_id, caption=soundbits[1][0]+"\'s ["+soundbits[1][1]+"] bit", audio=soundbits[1][2])
-    bot.send_audio(chat_id=update.message.chat_id, caption=soundbits[2][0]+"\'s ["+soundbits[2][1]+"] bit", audio=soundbits[2][2])
+    # bot.send_audio(chat_id=update.message.chat_id, caption=soundbits[2][0]+"\'s ["+soundbits[2][1]+"] bit", audio=soundbits[2][2])
     bot.send_audio(chat_id=update.message.chat_id, caption=soundbits[3][0]+"\'s ["+soundbits[3][1]+"] bit", audio=soundbits[3][2])
     # Testing dictionary:
     # bot.send_audio(chat_id=update.message.chat_id, caption=soundbits[Play][0]+"\'s ["+soundbits[Play][1]+"] bit", audio=soundbits[Play][2])
