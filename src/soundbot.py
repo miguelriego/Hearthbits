@@ -167,7 +167,6 @@ def scrape2(q):
         for card_id in results:
             card_id = re.split("\-", card_id)[0]
             cards.append(get_card(card_id, db))
-            #soundbites.append(c.execute('select name, src from sounds where card_id = ?', (card_id,)))
             c.execute('SELECT cards.name, sounds.name, sounds.src FROM sounds INNER JOIN cards on sounds.card_id = cards.card_id WHERE sounds.card_id = ?', (card_id,))
             soundbites.append(c.fetchall())
 
@@ -181,13 +180,11 @@ def scrape2(q):
                 for sound in item:
                     qlist.append(sound)
         
-        play = (qlist[0], qlist[1], qlist[2])
-        attack = (qlist[3], qlist[4], qlist[5])
-        # Trigger needs to be adjusted only for cards that have it!
-        # trigger = (qlist[6], qlist[7], qlist[8])
-        death = (qlist[9], qlist[10], qlist[11])
-        soundtup = (play, attack, death)
-        #sounddict = {Play: play, Attack: attack, Trigger: trigger, Death: death}
+        sb1 = (qlist[0], qlist[1], qlist[2])
+        sb2 = (qlist[3], qlist[4], qlist[5])
+        sb3 = (qlist[6], qlist[7], qlist[8])
+
+        soundtup = (sb1, sb2, sb3)
 
         return(soundtup)
 

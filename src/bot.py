@@ -23,13 +23,10 @@ def help(bot, update):
 def echo(bot, update):
     #update.message.reply_text(update.message.text)
     soundbits = scrape2(update.message.text)
-    # For tuples
     bot.send_audio(chat_id=update.message.chat_id, caption=soundbits[0][0]+"\'s ["+soundbits[0][1]+"] bit", audio=soundbits[0][2])
     bot.send_audio(chat_id=update.message.chat_id, caption=soundbits[1][0]+"\'s ["+soundbits[1][1]+"] bit", audio=soundbits[1][2])
-    # bot.send_audio(chat_id=update.message.chat_id, caption=soundbits[2][0]+"\'s ["+soundbits[2][1]+"] bit", audio=soundbits[2][2])
-    bot.send_audio(chat_id=update.message.chat_id, caption=soundbits[3][0]+"\'s ["+soundbits[3][1]+"] bit", audio=soundbits[3][2])
-    # Testing dictionary:
-    # bot.send_audio(chat_id=update.message.chat_id, caption=soundbits[Play][0]+"\'s ["+soundbits[Play][1]+"] bit", audio=soundbits[Play][2])
+    bot.send_audio(chat_id=update.message.chat_id, caption=soundbits[2][0]+"\'s ["+soundbits[2][1]+"] bit", audio=soundbits[2][2])
+
 
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
@@ -37,7 +34,7 @@ def error(bot, update, error):
 
 def main():
     # Create the EventHandler and pass it your bot's token.
-    updater = Updater(token='')
+    updater = Updater(token='428829269:AAHku3MWFL02S2J5Ira5dWHj-koIbwBCkHg')
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
