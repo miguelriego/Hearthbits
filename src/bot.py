@@ -22,10 +22,10 @@ def help(bot, update):
 
 def echo(bot, update):
     #update.message.reply_text(update.message.text)
-    soundbits = scrape2(update.message.text)
-    bot.send_audio(chat_id=update.message.chat_id, caption=soundbits[0][0]+"\'s ["+soundbits[0][1]+"] bit", audio=soundbits[0][2])
-    bot.send_audio(chat_id=update.message.chat_id, caption=soundbits[1][0]+"\'s ["+soundbits[1][1]+"] bit", audio=soundbits[1][2])
-    bot.send_audio(chat_id=update.message.chat_id, caption=soundbits[2][0]+"\'s ["+soundbits[2][1]+"] bit", audio=soundbits[2][2])
+    sound_dict = scrape2(update.message.text)
+    for k, v in sound_dict.items():
+        if k != 'Name':
+            bot.send_audio(chat_id=update.message.chat_id, caption=sound_dict['Name']+"\'s ["+k+"] bit", audio=v)
 
 
 def error(bot, update, error):
@@ -34,7 +34,7 @@ def error(bot, update, error):
 
 def main():
     # Create the EventHandler and pass it your bot's token.
-    updater = Updater(token='428829269:AAHku3MWFL02S2J5Ira5dWHj-koIbwBCkHg')
+    updater = Updater(token='')
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher

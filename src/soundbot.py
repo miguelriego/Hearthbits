@@ -156,37 +156,37 @@ def scrape2(q):
     db = connect('hearthsounds.db')
     c = db.cursor()
 
+    # Initialize variables
     cards = []
-    soundbites = []
-    qlist = []
-    
+    temp_list = []
+    soundslist = []
+    sound_dict = {'Name': '',}
+
+
+    # If q, run search and store results into corresponding variables
     if q:
         q = q.lower().strip()
         results, in_cache = search_hearthpwn(q, db)
     
+    # Run regex for card extraction and db insertion
         for card_id in results:
             card_id = re.split("\-", card_id)[0]
             cards.append(get_card(card_id, db))
             c.execute('SELECT cards.name, sounds.name, sounds.src FROM sounds INNER JOIN cards on sounds.card_id = cards.card_id WHERE sounds.card_id = ?', (card_id,))
-            soundbites.append(c.fetchall())
+            temp_list.append(c.fetchall())
 
             if results and not in_cache:
                 c.execute('insert into searches (query, card_id) values (?, ?)', (q, card_id))
                 db.commit()
                 print(results, " added to DB!")
         
-        for row in soundbites:
+    # Structure data into dictionary form
+        sound_dict.update({'Name': temp_list[0][0][0]})
+        for row in temp_list:
             for item in row:
-                for sound in item:
-                    qlist.append(sound)
-        
-        sb1 = (qlist[0], qlist[1], qlist[2])
-        sb2 = (qlist[3], qlist[4], qlist[5])
-        sb3 = (qlist[6], qlist[7], qlist[8])
+            	sound_dict[item[1]] = item[2]
 
-        soundtup = (sb1, sb2, sb3)
-
-        return(soundtup)
+        return(sound_dict)
 
         c.close()
     
