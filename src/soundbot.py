@@ -119,42 +119,6 @@ def connect(db_file):
 def scrape(q):
     db = connect('hearthsounds.db')
     c = db.cursor()
-    
-    card_name = ''
-    error = ''
-    cards = []
-    soundbites = []
-    
-    if q:
-        q = q.lower().strip()
-        results, in_cache = search_hearthpwn(q, db)
-    
-
-        for card_id in results:
-            card_id = re.split("\-", card_id)[0]
-            cards.append(get_card(card_id, db))
-            #soundbites.append(c.execute('select name, src from sounds where card_id = ?', (card_id,)))
-            c.execute('select name, src from sounds where card_id = ?', (card_id,))
-            soundbites.append(c.fetchall())
-
-            if results and not in_cache:
-                c.execute('insert into searches (query, card_id) values (?, ?)', (q, card_id))
-                db.commit()
-                print(results, " added to DB!")
-        
-        for row in soundbites:
-            for item in row:
-                for sound in item:
-                    print(sound)
- 
-        return(results)
-        c.close()
-    
-    db.close()
-
-def scrape2(q):
-    db = connect('hearthsounds.db')
-    c = db.cursor()
 
     # Initialize variables
     cards = []

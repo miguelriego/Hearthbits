@@ -22,7 +22,7 @@ def help(bot, update):
 
 def echo(bot, update):
     #update.message.reply_text(update.message.text)
-    sound_dict = scrape2(update.message.text)
+    sound_dict = scrape(update.message.text)
     for k, v in sound_dict.items():
         if k != 'Name':
             bot.send_audio(chat_id=update.message.chat_id, caption=sound_dict['Name']+"\'s ["+k+"] bit", audio=v)
