@@ -3,6 +3,7 @@ import telebot
 import time
 import sys
 import logging
+import re
 from telebot import *
 from soundbot import *
 
@@ -12,66 +13,25 @@ bot = telebot.TeleBot(API_TOKEN)
 telebot.logger.setLevel(logging.DEBUG)
 
 
-@bot.inline_handler(lambda query: query.query == 'text')
-def query_text(inline_query):
-    try:
-        r = types.InlineQueryResultArticle('1', 'Result1', types.InputTextMessageContent('hi'))
-        r2 = types.InlineQueryResultArticle('2', 'Result2', types.InputTextMessageContent('hi'))
-        bot.answer_inline_query(inline_query.id, [r, r2])
-    except Exception as e:
-        print(e)
-
-
-
-@bot.inline_handler(lambda query: query.query == 'card')
+# WORKS: Builds inline card query function. Using InlineQueryResultArticle while I figure how to give cards format
+@bot.inline_handler(lambda query: len(query.query) > 0)
 def query_card(inline_query):
-    soundtup = scrape2(inline_query.query)
+    temp_list = []
     try:
-        r = types.InlineQueryResultPhoto('grim patron',
-                                         'https://raw.githubusercontent.com/eternnoir/pyTelegramBotAPI/master/examples/detailed_example/kitten.jpg',
-                                         'https://raw.githubusercontent.com/eternnoir/pyTelegramBotAPI/master/examples/detailed_example/kitten.jpg',
-                                         input_message_content=types.InputTextMessageContent('hi'))
-        r2 = types.InlineQueryResultPhoto('2',
-                                          'https://raw.githubusercontent.com/eternnoir/pyTelegramBotAPI/master/examples/detailed_example/rooster.jpg',
-                                          'https://raw.githubusercontent.com/eternnoir/pyTelegramBotAPI/master/examples/detailed_example/rooster.jpg')
-        bot.answer_inline_query(inline_query.id, [r, r2], cache_time=1)
+        sound_dict = scrape(inline_query.query)
+        for k, v in sound_dict.items():
+            if k != 'Name':
+                print(k,v)
+                temp_list.append(types.InlineQueryResultArticle(k, k, types.InputTextMessageContent(sound_dict['Name']+"\'s ["+k+"] bit:\n"+v), None, 'http://telegram.org', True,  'Subtitle 1', 'https://telegram.org/img/t_logo.png',640, 640))
+        bot.answer_inline_query(inline_query.id, temp_list, cache_time=1)
     except Exception as e:
-        print(e)
-
-
-@bot.inline_handler(lambda query: query.query == 'photo1')
-def query_photo(inline_query):
-    try:
-        r = types.InlineQueryResultPhoto('1',
-                                         'https://raw.githubusercontent.com/eternnoir/pyTelegramBotAPI/master/examples/detailed_example/kitten.jpg',
-                                         'https://raw.githubusercontent.com/eternnoir/pyTelegramBotAPI/master/examples/detailed_example/kitten.jpg',
-                                         input_message_content=types.InputTextMessageContent('hi'))
-        r2 = types.InlineQueryResultPhoto('2',
-                                          'https://raw.githubusercontent.com/eternnoir/pyTelegramBotAPI/master/examples/detailed_example/rooster.jpg',
-                                          'https://raw.githubusercontent.com/eternnoir/pyTelegramBotAPI/master/examples/detailed_example/rooster.jpg')
-        bot.answer_inline_query(inline_query.id, [r, r2], cache_time=1)
-    except Exception as e:
-        print(e)
-
-
-@bot.inline_handler(lambda query: query.query == 'video')
-def query_video(inline_query):
-    try:
-        r = types.InlineQueryResultVideo('1',
-                                         'https://github.com/eternnoir/pyTelegramBotAPI/blob/master/tests/test_data/test_video.mp4?raw=true',
-                                         'video/mp4', 'Video',
-                                         'https://raw.githubusercontent.com/eternnoir/pyTelegramBotAPI/master/examples/detailed_example/rooster.jpg',
-                                         'Title'
-                                         )
-        bot.answer_inline_query(inline_query.id, [r])
-    except Exception as e:
-        print(e)
+            print(e)
 
 
 @bot.inline_handler(lambda query: len(query.query) is 0)
 def default_query(inline_query):
     try:
-        r = types.InlineQueryResultArticle('1', 'default', types.InputTextMessageContent('default'))
+        r = types.InlineQueryResultArticle('1', 'Write a full card name!', types.InputTextMessageContent('default'))
         bot.answer_inline_query(inline_query.id, [r])
     except Exception as e:
         print(e)
