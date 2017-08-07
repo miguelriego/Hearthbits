@@ -23,6 +23,7 @@ def query_card(inline_query):
             if k != 'Name':
                 print(k,v)
                 temp_list.append(types.InlineQueryResultArticle(k, k, types.InputTextMessageContent(sound_dict['Name']+"\'s ["+k+"] bit:\n"+v), None, 'http://telegram.org', True,  'Subtitle 1', 'https://telegram.org/img/t_logo.png',640, 640))
+                #temp_list.append(types.InlineQueryResultVoice(id=k, voice_url=v, title="^ "+sound_dict['Name']+"\'s ["+k+"] bit:\n"+v, caption=sound_dict['Name']+"\'s ["+k+"] bit"))
         bot.answer_inline_query(inline_query.id, temp_list, cache_time=1)
     except Exception as e:
             print(e)
