@@ -64,6 +64,7 @@ class Card:
         soup = BeautifulSoup(html, 'html.parser')
         self.name = soup.find('h2').text
         self.image = soup.find('img', class_='hscard-static')['src']
+        self.gif = soup.find('', class_='hscard-static')['data-gifurl']
         audio = soup.find_all('audio')
         self.sounds = []
         for a in audio:
@@ -81,13 +82,14 @@ class Card:
             self.card_id = row['card_id']
             self.name = row['name']
             self.image = row['image']
+            self.gif = row['gif']
 
             self.c.execute('select name, src from sounds where card_id = ?', (self.card_id,))
 
             self.sounds = []
 
             for row in self.c:
-                self.sounds.append({'id': row['name'], 'src': row['src']})
+                self.sounds.append({'id': row['name'], 'src': row['src'],})
 
             self.c.close()
             return True
@@ -97,8 +99,8 @@ class Card:
 
     def insert(self):
         self.c = self.db.cursor()
-        self.c.execute('insert into cards (card_id, name, image) values (?, ?, ?)',
-                       (self.card_id, self.name, self.image))
+        self.c.execute('insert into cards (card_id, name, image, gif) values (?, ?, ?, ?)',
+                       (self.card_id, self.name, self.image, self.gif))
         for sound in self.sounds:
             self.c.execute('insert into sounds (card_id, name, src) values (?, ?, ?)',
                            (self.card_id, sound['id'], sound['src']))
@@ -136,6 +138,8 @@ def scrape(q):
         for card_id in results:
             card_id = re.split("\-", card_id)[0]
             cards.append(get_card(card_id, db))
+            c.execute('SELECT cards.name, cards.image, cards.gif FROM cards WHERE cards.card_id = ?', (card_id,))
+            temp_tup=c.fetchone()
             c.execute('SELECT cards.name, sounds.name, sounds.src FROM sounds INNER JOIN cards on sounds.card_id = cards.card_id WHERE sounds.card_id = ?', (card_id,))
             temp_list.append(c.fetchall())
 
@@ -145,11 +149,11 @@ def scrape(q):
                 print(results, " added to DB!")
         
     # Structure data into dictionary form
-        sound_dict.update({'Name': temp_list[0][0][0]})
+        sound_dict.update({'Name': temp_list[0][0][0], 'Image':temp_tup[1], 'GIF':temp_tup[2],})
+        #sound_dict.update({'Name': temp_list[0][0][0]})
         for row in temp_list:
             for item in row:
             	sound_dict[item[1]] = item[2]
-
         return(sound_dict)
 
         c.close()

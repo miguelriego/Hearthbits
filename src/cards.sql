@@ -5,6 +5,7 @@ create table cards (
     card_id text unique,
     name text,
     image text,
+    gif text,
     created datetime default current_timestamp
 );
 
