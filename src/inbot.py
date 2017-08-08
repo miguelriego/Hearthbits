@@ -19,16 +19,17 @@ def query_card(inline_query):
     temp_list = []
     try:
         sound_dict = scrape(inline_query.query)
-        for k, v in sound_dict.items():
-            if k != 'Name':
-                temp_list.append(types.InlineQueryResultArticle(id=k, 
-                                                                title=k, 
-                                                                input_message_content=types.InputTextMessageContent(sound_dict['Name']+"\'s ["+k+"] bit:\n"+v), 
-                                                                reply_markup=None, 
-                                                                description=sound_dict['Name']+"\'s ["+k+"]", 
-                                                                thumb_url=sound_dict['Image'], 
-                                                                thumb_width=640, 
-                                                                thumb_height=640))
+        for key, sub_dict in sound_dict.items():
+            for k, v in sub_dict.items():
+                if k != 'Name':
+                    temp_list.append(types.InlineQueryResultArticle(id=key+k, 
+                                                                    title=k, 
+                                                                    input_message_content=types.InputTextMessageContent(sub_dict['Name']+"\'s ["+k+"] bit:\n"+v), 
+                                                                    reply_markup=None, 
+                                                                    description=sub_dict['Name']+"\'s ["+k+"]", 
+                                                                    thumb_url=sub_dict['Image'], 
+                                                                    thumb_width=640, 
+                                                                    thumb_height=640))
                 #temp_list.append(types.InlineQueryResultVoice(id=k, voice_url=v, title="^ "+sound_dict['Name']+"\'s ["+k+"] bit:\n"+v, caption=sound_dict['Name']+"\'s ["+k+"] bit"))
         bot.answer_inline_query(inline_query.id, temp_list, cache_time=1)
     except Exception as e:

@@ -125,9 +125,8 @@ def scrape(q):
     # Initialize variables
     cards = []
     temp_list = []
-    soundslist = []
-    sound_dict = {'Name': '',}
-
+    row_dict = {}
+    sound_dict= {}
 
     # If q, run search and store results into corresponding variables
     if q:
@@ -138,24 +137,28 @@ def scrape(q):
         for card_id in results:
             card_id = re.split("\-", card_id)[0]
             cards.append(get_card(card_id, db))
+
+    # Run sequel queries for "header"and souds data
             c.execute('SELECT cards.name, cards.image, cards.gif FROM cards WHERE cards.card_id = ?', (card_id,))
             temp_tup=c.fetchone()
             c.execute('SELECT cards.name, sounds.name, sounds.src FROM sounds INNER JOIN cards on sounds.card_id = cards.card_id WHERE sounds.card_id = ?', (card_id,))
             temp_list.append(c.fetchall())
 
+    # Structure data into dictionary form within same loop
+            row_dict = {'Name': temp_tup[0], 'Image':temp_tup[1], 'GIF':temp_tup[2],}
+            for row in temp_list:
+                for item in row:
+                    row_dict[item[1]] = item[2]
+            
+            sound_dict[card_id] = row_dict
+            
             if results and not in_cache:
                 c.execute('insert into searches (query, card_id) values (?, ?)', (q, card_id))
                 db.commit()
                 print(results, " added to DB!")
-        
-    # Structure data into dictionary form
-        sound_dict.update({'Name': temp_list[0][0][0], 'Image':temp_tup[1], 'GIF':temp_tup[2],})
-        #sound_dict.update({'Name': temp_list[0][0][0]})
-        for row in temp_list:
-            for item in row:
-            	sound_dict[item[1]] = item[2]
-        return(sound_dict)
 
+        return(sound_dict)
+       
         c.close()
     
     db.close()
