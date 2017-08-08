@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 
 # Database file. You can build from scratch with SQL script
-*.db
+hearthsounds.db
 
 # C extensions
 *.so
