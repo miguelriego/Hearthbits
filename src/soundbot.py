@@ -23,7 +23,7 @@ def search_hearthpwn(query, db):
 
         return (results, True)
 
-    r = requests.get('http://www.hearthpwn.com/cards/minion',
+    r = requests.get('https://www.hearthpwn.com/cards/',
                      params={'filter-name': query, 'filter-premium': 1})
     html = r.text
     soup = BeautifulSoup(html, 'html.parser')
@@ -47,7 +47,7 @@ def get_card(card_id, db):
     exists = card.from_sql()
 
     if not exists:
-        r = requests.get('http://www.hearthpwn.com/cards/' + card_id)
+        r = requests.get('https://www.hearthpwn.com/cards/' + card_id)
         html = r.text.encode('utf-8')
         card.from_html(html)
         card.insert()
@@ -64,7 +64,10 @@ class Card:
         soup = BeautifulSoup(html, 'html.parser')
         self.name = soup.find('h2').text
         self.image = soup.find('img', class_='hscard-static')['src']
-        self.gif = soup.find('', class_='hscard-static')['data-gifurl']
+        temp_list = (soup.find('', class_='hscard-static')['data-gifurl']).split("/")
+        temp_list[5]=str(int(temp_list[5])-1)
+        temp_list="/".join(temp_list)
+        self.gif = temp_list.replace('png','gif')
         audio = soup.find_all('audio')
         self.sounds = []
         for a in audio:

@@ -7,7 +7,7 @@ import re
 from telebot import *
 from soundbot import *
 
-API_TOKEN = ''
+API_TOKEN = '428829269:AAHku3MWFL02S2J5Ira5dWHj-koIbwBCkHg'
 
 bot = telebot.TeleBot(API_TOKEN)
 telebot.logger.setLevel(logging.DEBUG)
@@ -39,7 +39,7 @@ def query_card(inline_query):
 @bot.inline_handler(lambda query: len(query.query) is 0)
 def default_query(inline_query):
     try:
-        r = types.InlineQueryResultArticle('1', 'Write a full card name!', types.InputTextMessageContent('default'))
+        r = types.InlineQueryResultArticle('1', 'Write a card name!', types.InputTextMessageContent('http://cloud-3.steamusercontent.com/ugc/547517466429744115/682DA0A373285668F4435E8C14EB171D58B0DCE0/'))
         bot.answer_inline_query(inline_query.id, [r])
     except Exception as e:
         print(e)
