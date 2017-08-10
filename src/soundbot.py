@@ -20,23 +20,17 @@ def search_hearthpwn(query, db):
 
     if cards:
         results = [r['card_id'] for r in cards]
-
         return (results, True)
 
-    r = requests.get('https://www.hearthpwn.com/cards/',
-                     params={'filter-name': query, 'filter-premium': 1})
-    html = r.text
-    soup = BeautifulSoup(html, 'html.parser')
-    cards = soup.find('tbody').find_all('tr')
+    r = requests.get('https://www.hearthpwn.com/find?q='+query).json() 
 
-    if cards[0].find('td', class_='no-results'):
+    if r == []:
         return ([], True)
 
     results = []
-    for card in cards:
-        details = card.find('td', class_='visual-details-cell')
-        card_url = details.find('h3').find('a')['href']
-        card_id = get_card_id(card_url)
+    for card in r:
+        card_url = (re.search('(/cards/\d{0,6}-\D*)(?=\\\')', card['Display']).group(1))
+        card_id = (re.search('(\d{0,6})(?=\-)', card['Display']).group(1))
         results.append(card_id)
 
     return (results, False)
@@ -158,7 +152,6 @@ def scrape(q):
             if results and not in_cache:
                 c.execute('insert into searches (query, card_id) values (?, ?)', (q, card_id))
                 db.commit()
-                print(results, " added to DB!")
 
         return(sound_dict)
        
