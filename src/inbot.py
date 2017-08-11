@@ -7,7 +7,7 @@ import re
 from telebot import *
 from soundbot import *
 
-API_TOKEN = ''
+API_TOKEN = '428829269:AAHku3MWFL02S2J5Ira5dWHj-koIbwBCkHg'
 
 bot = telebot.TeleBot(API_TOKEN)
 telebot.logger.setLevel(logging.DEBUG)
@@ -21,7 +21,7 @@ def query_card(inline_query):
         sound_dict = scrape(inline_query.query)
         for key, sub_dict in sound_dict.items():
             for k, v in sub_dict.items():
-                if k != 'Name':
+                if k not in ('Name'):
                     temp_list.append(types.InlineQueryResultArticle(id=key+k, 
                                                                     title=k, 
                                                                     input_message_content=types.InputTextMessageContent(sub_dict['Name']+"\'s ["+k+"] bit:\n"+v), 
@@ -30,8 +30,13 @@ def query_card(inline_query):
                                                                     thumb_url=sub_dict['Image'], 
                                                                     thumb_width=640, 
                                                                     thumb_height=640))
-                #temp_list.append(types.InlineQueryResultVoice(id=k, voice_url=v, title="^ "+sound_dict['Name']+"\'s ["+k+"] bit:\n"+v, caption=sound_dict['Name']+"\'s ["+k+"] bit"))
-        bot.answer_inline_query(inline_query.id, temp_list, cache_time=1)
+
+#                if k not in ('Name', 'Image', 'GIF'):
+#                    temp_list.append(types.InlineQueryResultVoice(id=key+k, 
+#                                                                    title=sub_dict['Name']+"\'s ["+k+"]", 
+#                                                                    voice_url=v))
+
+        bot.answer_inline_query(inline_query.id, temp_list[0:50], cache_time=1)
     except Exception as e:
             print(e)
 

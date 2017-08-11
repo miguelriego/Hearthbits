@@ -19,7 +19,7 @@ def search_hearthpwn(query, db):
     c.close()
 
     if cards:
-        results = [r['card_id'] for r in cards]
+        results = [r['card_id'] for r in cards[0:4]]
 
         return (results, True)
 
