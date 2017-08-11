@@ -27,15 +27,12 @@ def search_hearthpwn(query, db):
     if r == []:
         return ([], True)
 
-    names_list = []
     results = []
     for card in r:
-        card_name = (re.search('\'Key\': \'(\D*)(?=\'\,\s)', str(card)))
-        if card_name not in names_list:
-            names_list.append(card_name)
-            card_id = (re.search('(\d{0,6})(?=\-)', card['Display']).group(1))
-            results.append(card_id)
-        else: (results, False)
+        card_url = (re.search('(/cards/\d{0,6}-\D*)(?=\\\')', card['Display']).group(1))
+        card_id = (re.search('(\d{0,6})(?=\-)', card['Display']).group(1))
+        results.append(card_id)
+
     return (results, False)
 
 
