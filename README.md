@@ -11,7 +11,6 @@ bot.py is for direct messages to the bot (more for testing purposes), while inbo
 * GIFs are now working for all cards :)
 * Had to roll back changes for POST requests. Using original scraping function, with a few changes
 
-
 **Aug 10**
 * Bot now does direct POST requests! This makes querying relatively faster and more reliable
 
@@ -28,8 +27,8 @@ bot.py is for direct messages to the bot (more for testing purposes), while inbo
 
 ## To-do's:
 - [x] Make sure code can add new KoFT cards
-- [ ] Fix broken GIFs for new cards
-- [ ] Try and fix audio so it'll play on iphone as well
+- [x] Fix broken GIFs for new cards
+- [ ] Try to fix audio so it'll play on iphone as well
 - [x] Make a requirements.txt file
 - [x] Make card images display in in-line query
 - [x] Add spells and equipment to scrape capabilities (maybe even heroes, if possible)
