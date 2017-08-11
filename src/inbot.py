@@ -7,7 +7,7 @@ import re
 from telebot import *
 from soundbot import *
 
-API_TOKEN = '428829269:AAHku3MWFL02S2J5Ira5dWHj-koIbwBCkHg'
+API_TOKEN = ''
 
 bot = telebot.TeleBot(API_TOKEN)
 telebot.logger.setLevel(logging.DEBUG)
