@@ -64,10 +64,15 @@ class Card:
         soup = BeautifulSoup(html, 'html.parser')
         self.name = soup.find('h2').text
         self.image = soup.find('img', class_='hscard-static')['src']
-        temp_list = (soup.find('', class_='hscard-static')['data-gifurl']).split("/")
-        temp_list[5]=str(int(temp_list[5])-1)
-        temp_list="/".join(temp_list)
-        self.gif = temp_list.replace('png','gif')
+        self.set = soup.find('')
+        temp_list = (soup.find('', class_='hscard-static')['data-gifurl'])
+        if 'png' in temp_list:
+            temp_list = temp_list.split("/")
+            temp_list[5] = str(int(temp_list[5])-1)
+            temp_list = "/".join(temp_list)
+            self.gif = temp_list.replace('png','gif')
+        else: 
+            self.gif = (soup.find('', class_='hscard-static')['data-gifurl'])
         audio = soup.find_all('audio')
         self.sounds = []
         for a in audio:
