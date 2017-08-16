@@ -5,16 +5,17 @@ import sys
 import logging
 import re
 from telebot import *
+from converter import *
 from soundbot import *
 
-API_TOKEN = '428829269:AAHku3MWFL02S2J5Ira5dWHj-koIbwBCkHg'
+API_TOKEN = ''
 
 bot = telebot.TeleBot(API_TOKEN)
 telebot.logger.setLevel(logging.DEBUG)
 
 
 # Inline card query function. Using InlineQueryResultArticle while I figure how to give cards format
-@bot.inline_handler(lambda query: len(query.query) > 0)
+@bot.inline_handler(lambda query: len(query.query) > 3)
 def query_card(inline_query):
     temp_list = []
     try:
@@ -30,15 +31,10 @@ def query_card(inline_query):
                                                                     thumb_url=sub_dict['Image'], 
                                                                     thumb_width=640, 
                                                                     thumb_height=640))
-
-#                if k not in ('Name', 'Image', 'GIF'):
-#                    temp_list.append(types.InlineQueryResultVoice(id=key+k, 
-#                                                                    title=sub_dict['Name']+"\'s ["+k+"]", 
-#                                                                    voice_url=v))
-
         bot.answer_inline_query(inline_query.id, temp_list[0:50], cache_time=1)
     except Exception as e:
             print(e)
+
 
 # Inline card query used when nothing is typed yet
 @bot.inline_handler(lambda query: len(query.query) is 0)

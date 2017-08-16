@@ -7,6 +7,10 @@ To run the bot, install python 3 (I recommend via Anaconda) and use pip install 
 bot.py is for direct messages to the bot (more for testing purposes), while inbot handles inline queries. Soundbot is a modified script that gathers the card into a local db.
 
 ## Change log
+**Aug 16**
+* Added conversion function. Need FFMPEG and pydub for this
+* Updated requirements.txt
+
 **Aug 11**
 * GIFs are now working for all cards :)
 * Had to roll back changes for POST requests. Using original scraping function, with a few changes

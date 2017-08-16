@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 from bs4 import BeautifulSoup
 import cgi
 import json
@@ -6,6 +7,8 @@ from mako.template import Template
 import sqlite3
 import re
 import requests
+from pydub import AudioSegment
+from urllib.request import urlretrieve
 
 def get_card_id(url):
     m = re.search('/cards/([^/]*)', url)
@@ -163,11 +166,29 @@ def scrape(q):
             if results and not in_cache:
                 c.execute('insert into searches (query, card_id) values (?, ?)', (q, card_id))
                 db.commit()
-                print(results, " added to DB!")
+                print(card_id, " added to DB!")
 
         return(sound_dict)
        
         c.close()
     
     db.close()
+
+def convert(q):
+    testlist = []
+    sound_dict = scrape(q)
+    for key, sub_dict in sound_dict.items():
+        for k, v in sub_dict.items():
+            if k not in ('Name', 'Image', 'GIF'):
+                fname = sub_dict['Name']+"\'s_["+k+"]_bit"
+                fullfilename = str(os.path.join(os.getcwd(), 'temp', fname))
+
+                vogg = urlretrieve(v,fullfilename+'.ogg')[0]
+                vogg = AudioSegment.from_ogg(fullfilename+'.ogg')
+                vogg.export(fullfilename+'.mp3', format='mp3', tags={'title':sub_dict['Name']+'\'s_['+k+']','album':'Hearthstone',})
+                sound_dict[v] = fullfilename+'.mp3'
+                print(sound_dict)
+
+                os.remove(fullfilename+'.ogg')
+
 
