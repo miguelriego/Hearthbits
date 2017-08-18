@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Client stuff
+client_secret.json
+
 # Temporary soundbite dumps
 temp/
 

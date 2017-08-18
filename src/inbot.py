@@ -19,19 +19,20 @@ telebot.logger.setLevel(logging.DEBUG)
 def query_card(inline_query):
     temp_list = []
     try:
-        sound_dict = scrape(inline_query.query)
+        sound_dict = convert(inline_query.query)
         for key, sub_dict in sound_dict.items():
             for k, v in sub_dict.items():
                 if k not in ('Name'):
                     temp_list.append(types.InlineQueryResultArticle(id=key+k, 
                                                                     title=k, 
-                                                                    input_message_content=types.InputTextMessageContent(sub_dict['Name']+"\'s ["+k+"] bit:\n"+v), 
+                                                                    input_message_content=types.InputTextMessageContent(sub_dict['Name']+"\'s ["+k+"] bit:\n"+v),
+                                                                    #input_message_content=sendAudio(),
                                                                     reply_markup=None, 
                                                                     description=sub_dict['Name']+"\'s ["+k+"]", 
                                                                     thumb_url=sub_dict['Image'], 
                                                                     thumb_width=640, 
                                                                     thumb_height=640))
-        bot.answer_inline_query(inline_query.id, temp_list[0:50], cache_time=1)
+        bot.answer_inline_query(inline_query.id, temp_list[0:49], cache_time=1)
     except Exception as e:
             print(e)
 

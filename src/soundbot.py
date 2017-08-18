@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os
+import sys, os
 from bs4 import BeautifulSoup
 import cgi
 import json
@@ -8,7 +8,12 @@ import sqlite3
 import re
 import requests
 from pydub import AudioSegment
-from urllib.request import urlretrieve
+from urllib.request import urlretrieve, pathname2url
+from urllib.parse import urljoin
+import dropbox
+from telegram import File
+
+dbx = dropbox.Dropbox('')
 
 def get_card_id(url):
     m = re.search('/cards/([^/]*)', url)
@@ -175,7 +180,8 @@ def scrape(q):
     db.close()
 
 def convert(q):
-    testlist = []
+    # Missing: a way to remap values in dictionary or create new dict
+    temp_list = []
     sound_dict = scrape(q)
     for key, sub_dict in sound_dict.items():
         for k, v in sub_dict.items():
@@ -186,9 +192,14 @@ def convert(q):
                 vogg = urlretrieve(v,fullfilename+'.ogg')[0]
                 vogg = AudioSegment.from_ogg(fullfilename+'.ogg')
                 vogg.export(fullfilename+'.mp3', format='mp3', tags={'title':sub_dict['Name']+'\'s_['+k+']','album':'Hearthstone',})
-                sound_dict[v] = fullfilename+'.mp3'
-                print(sound_dict)
+                v = fname+'.mp3'
+                file = File(file_id=k+v, bot=None, file_size=None, file_path=fullfilename+".mp3")
+                print(file)
+                with open(fullfilename+'.mp3', 'rb') as f:
+                    dbx.files_upload(f.read(), '/test/'+v, mute=True)
 
                 os.remove(fullfilename+'.ogg')
+                
+    return(sound_dict)
 
 
