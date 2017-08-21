@@ -15,6 +15,7 @@ from telegram import File
 
 dbx = dropbox.Dropbox('')
 
+
 def get_card_id(url):
     m = re.search('/cards/([^/]*)', url)
     return m.group(1)
@@ -180,8 +181,6 @@ def scrape(q):
     db.close()
 
 def convert(q):
-    # Missing: a way to remap values in dictionary or create new dict
-    temp_list = []
     sound_dict = scrape(q)
     for key, sub_dict in sound_dict.items():
         for k, v in sub_dict.items():
@@ -197,9 +196,10 @@ def convert(q):
                 print(file)
                 with open(fullfilename+'.mp3', 'rb') as f:
                     dbx.files_upload(f.read(), '/test/'+v, mute=True)
+                    sub_dict[k] = dbx.files_get_temporary_link('/test/'+v).link
 
                 os.remove(fullfilename+'.ogg')
-                
+    
     return(sound_dict)
 
 
