@@ -7,6 +7,9 @@ To run the bot, install python 3 (I recommend via Anaconda) and use pip install 
 bot.py is for direct messages to the bot (more for testing purposes), while inbot handles inline queries. Soundbot is a modified script that gathers the card into a local db.
 
 ## Change log
+**Aug 22**
+* Tried uploading conversions to Dropbox, caching in cache DB. Worked fine until file handoff. Will instead host on my own site or something.
+
 **Aug 16**
 * Added conversion function. Need FFMPEG and pydub for this
 * Updated requirements.txt
