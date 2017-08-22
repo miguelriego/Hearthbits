@@ -13,7 +13,7 @@ from urllib.parse import urljoin
 import dropbox
 from telegram import File
 
-dbx = dropbox.Dropbox('cwlHfwFQ-54AAAAAAAAChzGrKR-BleJv57cAHIKIoXbus0JmdZDh-Fw-fplVGqFA')
+dbx = dropbox.Dropbox('cwlHfwFQ-54AAAAAAAACmaGldUd_SGTvp9ztWeL9ip-4aF_Plp9zb0injwF3bhcN')
 
 
 def get_card_id(url):
@@ -181,16 +181,21 @@ def scrape(q):
     db.close()
 
 def convert(q):
+    db = connect('hearthsounds.db')
+    c = db.cursor()
+
     sound_dict = scrape(q)
     for key, sub_dict in sound_dict.items():
         for k, v in sub_dict.items():
             if k not in ('Name', 'Image', 'GIF'):
                 fname = sub_dict['Name']+"\'s_["+k+"]_bit"
                 fullfilename = str(os.path.join(os.getcwd(), 'temp', fname))
-                v = fname+'.mp3'
+
+                c.execute('select card_id, name, src from c_sounds where card_id = ? AND name = ?', (key, k))
+                c_sounds = c.fetchall()
 
                 # Convert files if not on DropBox
-                if len(dbx.files_search('/test/',fname).matches) == 0:
+                if not c_sounds:
                     vogg = urlretrieve(v,fullfilename+'.ogg')[0]
                     vogg = AudioSegment.from_ogg(fullfilename+'.ogg')
                     vogg.export(fullfilename+'.mp3', 
@@ -200,18 +205,23 @@ def convert(q):
                     file = File(file_id=k+v, bot=None, file_size=None, file_path=fullfilename+".mp3")
                     print(file)
                     with open(fullfilename+'.mp3', 'rb') as f:
+                        v = fname+'.mp3'
                         dbx.files_upload(f.read(), '/test/'+v, mute=True)
-                        sub_dict[k] = dbx.files_get_temporary_link('/test/'+v).link
-                        #sub_dict[k] = dbx.sharing_create_shared_link('/test/'+v).url
+                        #sub_dict[k] = dbx.files_get_temporary_link('/test/'+v).link
+                        sub_dict[k] = dbx.sharing_create_shared_link('/test/'+v).url
 
                     os.remove(fullfilename+'.ogg')
                     os.remove(fullfilename+'.png')
 
+                    c.execute('insert into c_sounds (card_id, name, src) values (?, ?, ?)', (key, k, sub_dict[k]))
+                    db.commit()
+                
                 # Pull file links if on DropBox
-                else:
-                    sub_dict[k] = dbx.files_get_temporary_link('/test/'+v).link
-                    #sub_dict[k] = dbx.sharing_create_shared_link('/test/'+v).url
-    
+                if c_sounds:
+                    for item in c_sounds:
+                        sub_dict[k] = item[2][:-5]
+
     return(sound_dict)
 
-
+    c.close()
+    db.close()

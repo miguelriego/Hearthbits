@@ -7,7 +7,7 @@ import logging
 import re
 from soundbot import *
 
-API_TOKEN = ''
+API_TOKEN = '428829269:AAHku3MWFL02S2J5Ira5dWHj-koIbwBCkHg'
 
 bot = telebot.TeleBot(API_TOKEN)
 telebot.logger.setLevel(logging.DEBUG)
@@ -40,12 +40,13 @@ def query_card(inline_query):
             print(e)
 
 """
+
 # Safe inline card query function. Using InlineQueryResultArticle while I figure how to give cards format
 @bot.inline_handler(lambda query: len(query.query) > 3)
 def query_card(inline_query):
     temp_list = []
     try:
-        sound_dict = scrape(inline_query.query)
+        sound_dict = convert(inline_query.query)
         for key, sub_dict in sound_dict.items():
             for k, v in sub_dict.items():
                 if k not in ('Name', 'Image'):

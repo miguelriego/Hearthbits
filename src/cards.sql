@@ -19,6 +19,14 @@ create table sounds (
     foreign key(card_id) references cards(card_id)
 );
 
+create table c_sounds (
+    id integer primary key,
+    card_id text,
+    name text,
+    src text,
+    foreign key(card_id) references cards(card_id)
+);
+
 drop table if exists searches;
 
 create table searches (
