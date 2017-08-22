@@ -13,7 +13,7 @@ from urllib.parse import urljoin
 import dropbox
 from telegram import File
 
-dbx = dropbox.Dropbox('')
+dbx = dropbox.Dropbox('cwlHfwFQ-54AAAAAAAAChzGrKR-BleJv57cAHIKIoXbus0JmdZDh-Fw-fplVGqFA')
 
 
 def get_card_id(url):
@@ -73,7 +73,7 @@ class Card:
         soup = BeautifulSoup(html, 'html.parser')
         self.name = soup.find('h2').text
         self.image = soup.find('img', class_='hscard-static')['src']
-        self.set = soup.find('')
+        # Hack for misplaced GIFs in HPwn:
         temp_list = (soup.find('', class_='hscard-static')['data-gifurl'])
         if 'png' in temp_list:
             temp_list = temp_list.split("/")
@@ -187,18 +187,30 @@ def convert(q):
             if k not in ('Name', 'Image', 'GIF'):
                 fname = sub_dict['Name']+"\'s_["+k+"]_bit"
                 fullfilename = str(os.path.join(os.getcwd(), 'temp', fname))
-
-                vogg = urlretrieve(v,fullfilename+'.ogg')[0]
-                vogg = AudioSegment.from_ogg(fullfilename+'.ogg')
-                vogg.export(fullfilename+'.mp3', format='mp3', tags={'title':sub_dict['Name']+'\'s_['+k+']','album':'Hearthstone',})
                 v = fname+'.mp3'
-                file = File(file_id=k+v, bot=None, file_size=None, file_path=fullfilename+".mp3")
-                print(file)
-                with open(fullfilename+'.mp3', 'rb') as f:
-                    dbx.files_upload(f.read(), '/test/'+v, mute=True)
-                    sub_dict[k] = dbx.files_get_temporary_link('/test/'+v).link
 
-                os.remove(fullfilename+'.ogg')
+                # Convert files if not on DropBox
+                if len(dbx.files_search('/test/',fname).matches) == 0:
+                    vogg = urlretrieve(v,fullfilename+'.ogg')[0]
+                    vogg = AudioSegment.from_ogg(fullfilename+'.ogg')
+                    vogg.export(fullfilename+'.mp3', 
+                                format='mp3', 
+                                cover=urlretrieve(sub_dict['Image'], fullfilename+'.png')[0],
+                                tags={'title':sub_dict['Name']+'\'s_['+k+']','album':'Hearthstone'})
+                    file = File(file_id=k+v, bot=None, file_size=None, file_path=fullfilename+".mp3")
+                    print(file)
+                    with open(fullfilename+'.mp3', 'rb') as f:
+                        dbx.files_upload(f.read(), '/test/'+v, mute=True)
+                        sub_dict[k] = dbx.files_get_temporary_link('/test/'+v).link
+                        #sub_dict[k] = dbx.sharing_create_shared_link('/test/'+v).url
+
+                    os.remove(fullfilename+'.ogg')
+                    os.remove(fullfilename+'.png')
+
+                # Pull file links if on DropBox
+                else:
+                    sub_dict[k] = dbx.files_get_temporary_link('/test/'+v).link
+                    #sub_dict[k] = dbx.sharing_create_shared_link('/test/'+v).url
     
     return(sound_dict)
 
