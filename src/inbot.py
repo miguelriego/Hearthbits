@@ -7,8 +7,7 @@ import logging
 import re
 from soundbot import *
 
-API_TOKEN = '428829269:AAHku3MWFL02S2J5Ira5dWHj-koIbwBCkHg'
-
+API_TOKEN = ''
 bot = telebot.TeleBot(API_TOKEN)
 telebot.logger.setLevel(logging.DEBUG)
 
@@ -17,7 +16,7 @@ telebot.logger.setLevel(logging.DEBUG)
 def query_card(inline_query):
     temp_list = []
     try:
-        sound_dict = convert(inline_query.query)
+        sound_dict = scrape(inline_query.query)
         for key, sub_dict in sound_dict.items():
             for k, v in sub_dict.items():
                 if k == 'GIF':
@@ -46,7 +45,7 @@ def query_card(inline_query):
 def query_card(inline_query):
     temp_list = []
     try:
-        sound_dict = convert(inline_query.query)
+        sound_dict = scrape(inline_query.query)
         for key, sub_dict in sound_dict.items():
             for k, v in sub_dict.items():
                 if k not in ('Name', 'Image'):
@@ -61,7 +60,7 @@ def query_card(inline_query):
         bot.answer_inline_query(inline_query.id, temp_list[0:49], cache_time=1)
     except Exception as e:
             print(e)
-"""
+
 
 # Inline card query used when nothing is typed yet
 gitgud = 'http://cloud-3.steamusercontent.com/ugc/547517466429744115/682DA0A373285668F4435E8C14EB171D58B0DCE0/'
@@ -74,7 +73,7 @@ def default_query(inline_query):
         bot.answer_inline_query(inline_query.id, [r])
     except Exception as e:
         print(e)
-
+"""
 
 def main_loop():
     bot.polling(True)

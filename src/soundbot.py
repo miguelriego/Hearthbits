@@ -13,7 +13,8 @@ from urllib.parse import urljoin
 import dropbox
 from telegram import File
 
-dbx = dropbox.Dropbox('cwlHfwFQ-54AAAAAAAACmaGldUd_SGTvp9ztWeL9ip-4aF_Plp9zb0injwF3bhcN')
+# Dropping dropbox connection. Will host on own site
+dbx = dropbox.Dropbox('')
 
 
 def get_card_id(url):
@@ -207,8 +208,10 @@ def convert(q):
                     with open(fullfilename+'.mp3', 'rb') as f:
                         v = fname+'.mp3'
                         dbx.files_upload(f.read(), '/test/'+v, mute=True)
-                        #sub_dict[k] = dbx.files_get_temporary_link('/test/'+v).link
-                        sub_dict[k] = dbx.sharing_create_shared_link('/test/'+v).url
+                        # sub_dict[k] = dbx.files_get_temporary_link('/test/'+v).link
+                        
+                        # The following method is preferred, but telegram doesn't seem to play well with dropbox shared links.
+                        sub_dict[k] = dbx.sharing_create_shared_link(path='/test/'+v, short_url=False).url[:-4]+'dl=1'
 
                     os.remove(fullfilename+'.ogg')
                     os.remove(fullfilename+'.png')
