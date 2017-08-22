@@ -10,11 +10,7 @@ import requests
 from pydub import AudioSegment
 from urllib.request import urlretrieve, pathname2url
 from urllib.parse import urljoin
-import dropbox
 from telegram import File
-
-# Dropping dropbox connection. Will host on own site
-dbx = dropbox.Dropbox('')
 
 
 def get_card_id(url):
@@ -195,7 +191,7 @@ def convert(q):
                 c.execute('select card_id, name, src from c_sounds where card_id = ? AND name = ?', (key, k))
                 c_sounds = c.fetchall()
 
-                # Convert files if not on DropBox
+                # Convert files if not on DB
                 if not c_sounds:
                     vogg = urlretrieve(v,fullfilename+'.ogg')[0]
                     vogg = AudioSegment.from_ogg(fullfilename+'.ogg')
@@ -207,11 +203,6 @@ def convert(q):
                     print(file)
                     with open(fullfilename+'.mp3', 'rb') as f:
                         v = fname+'.mp3'
-                        dbx.files_upload(f.read(), '/test/'+v, mute=True)
-                        # sub_dict[k] = dbx.files_get_temporary_link('/test/'+v).link
-                        
-                        # The following method is preferred, but telegram doesn't seem to play well with dropbox shared links.
-                        sub_dict[k] = dbx.sharing_create_shared_link(path='/test/'+v, short_url=False).url[:-4]+'dl=1'
 
                     os.remove(fullfilename+'.ogg')
                     os.remove(fullfilename+'.png')
@@ -219,7 +210,7 @@ def convert(q):
                     c.execute('insert into c_sounds (card_id, name, src) values (?, ?, ?)', (key, k, sub_dict[k]))
                     db.commit()
                 
-                # Pull file links if on DropBox
+                # Pull file links if on DB
                 if c_sounds:
                     for item in c_sounds:
                         sub_dict[k] = item[2][:-5]
