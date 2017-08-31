@@ -29,9 +29,9 @@ def query_card(inline_query):
                                                                     thumb_width=640, 
                                                                     thumb_height=640))
                 if k not in ('Name', 'Image', 'GIF'):
-                    temp_list.append(types.InlineQueryResultAudio(id=key+k, 
+                    temp_list.append(types.InlineQueryResultVoice(id=key+k, 
                                                                     title=sub_dict['Name']+"\'s ["+k+"]", 
-                                                                    audio_url=v,
+                                                                    voice_url=v,
                                                                     reply_markup=None, 
                                                                     caption=sub_dict['Name']+"\'s ["+k+"] bit"))
         bot.answer_inline_query(inline_query.id, temp_list[0:49], cache_time=1)
@@ -60,7 +60,7 @@ def query_card(inline_query):
         bot.answer_inline_query(inline_query.id, temp_list[0:49], cache_time=1)
     except Exception as e:
             print(e)
-
+"""
 
 # Inline card query used when nothing is typed yet
 gitgud = 'http://cloud-3.steamusercontent.com/ugc/547517466429744115/682DA0A373285668F4435E8C14EB171D58B0DCE0/'
@@ -73,7 +73,7 @@ def default_query(inline_query):
         bot.answer_inline_query(inline_query.id, [r])
     except Exception as e:
         print(e)
-"""
+
 
 def main_loop():
     bot.polling(True)

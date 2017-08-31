@@ -10,7 +10,6 @@ import requests
 from pydub import AudioSegment
 from urllib.request import urlretrieve, pathname2url
 from urllib.parse import urljoin
-from telegram import File
 
 
 def get_card_id(url):
